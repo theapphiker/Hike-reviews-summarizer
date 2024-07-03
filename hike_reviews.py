@@ -14,7 +14,12 @@ def main():
         hiking_url = is_valid_url()
         hiking_comments = parse_hiking_url(hiking_url)
         print(google_ai_summary(hiking_comments))
-        sys.exit()
+        question = "Do you want to enter another hike"
+        answer = get_yes_or_no(question)
+        if answer == 'y':
+            continue
+        else:
+            sys.exit()
 
 
 def is_valid_url():
@@ -99,6 +104,23 @@ def google_ai_summary(comments):
         prompt = "Please write a summary of the following reviews of a hike that includes what users liked about the hike, what they disliked about the hike, and a summary of how they described the parking lot."
         response = model.generate_content(prompt + ': ' + comments)
         return "\nSummary of the reviews: \n" + response.text
+
+def get_yes_or_no(question):
+  """
+  This function asks the user a question and keeps asking until they answer with yes or no (case-insensitive).
+
+  Args:
+      question: The question to ask the user.
+
+  Returns:
+      True if the user answers yes, False otherwise.
+  """
+  while True:
+    answer = input(f"{question} (y/n): ").lower().strip()
+    if answer in ("y", "n"):
+      return answer
+    else:
+      print("Please answer y or n.")
 
 if __name__ == "__main__":
     main()
