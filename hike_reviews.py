@@ -2,6 +2,7 @@ import requests
 import bs4
 import regex as re
 from urllib.parse import urlparse
+import google.generativeai as genai
 import sys
 
 
@@ -12,7 +13,8 @@ def main():
     while True:
         hiking_url = is_valid_url()
         hiking_comments = parse_hiking_url(hiking_url)
-        print(hiking_comments)
+        print("\nSummary of the reviews: \n")
+        print(google_ai_summary(hiking_comments))
         sys.exit()
 
 
@@ -53,7 +55,7 @@ def is_valid_url():
 
 def parse_hiking_url(hiking_url):
     """
-    This function takes a URL for a hike on hikingupward.com and fetches the list of comments from that hike's page.
+    This function takes a URL for a hike on hikingupward.com and fetches the list of comments from that hike's page - including archived comments.
     If the page has no comments, it returns the message "There are no comments."
     """
     original_request = requests.get(hiking_url)
@@ -67,7 +69,6 @@ def parse_hiking_url(hiking_url):
     else:
         return get_comments(comments_link)
 
-#TODO: return as a txt file
 def get_comments(comments_link):
     """
     This function takes a URL for the comments page of a hike on hikingupward.com and returns a string of comments from that page.
@@ -80,6 +81,25 @@ def get_comments(comments_link):
         if 'font size="1"' in str(comment)
     ]
     return ' '.join(comments)
+
+def google_ai_summary(comments):
+    """
+    This functions takes the comments for a hike and uses a Google AI model to summarize what hikers liked and disliked about the hike
+    and what they thought about the parking area.
+    """
+    # try to obtain Google API key from api_key.txt
+    try:
+        file = open("api_key.txt")
+        genai.configure(api_key=file.read().rstrip().lstrip())
+        file.close()
+    except:
+        print("Please make sure that you saved a valid Google API key in a file titled 'api_key.txt'.")
+    else:
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        # change prompt as needed depending on the response the user wants
+        prompt = "Please write a summary of the following reviews of a hike that includes what users liked about the hike, what they disliked about the hike, and a summary of how they described the parking lot."
+        response = model.generate_content(prompt + ': ' + comments)
+        return response.text
 
 if __name__ == "__main__":
     main()
