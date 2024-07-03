@@ -13,7 +13,6 @@ def main():
     while True:
         hiking_url = is_valid_url()
         hiking_comments = parse_hiking_url(hiking_url)
-        print("\nSummary of the reviews: \n")
         print(google_ai_summary(hiking_comments))
         sys.exit()
 
@@ -93,13 +92,13 @@ def google_ai_summary(comments):
         genai.configure(api_key=file.read().rstrip().lstrip())
         file.close()
     except:
-        print("Please make sure that you saved a valid Google API key in a file titled 'api_key.txt'.")
+        return "\nPlease make sure that you saved a valid Google API key in a text file titled 'api_key.txt'."
     else:
         model = genai.GenerativeModel('gemini-1.5-flash')
         # change prompt as needed depending on the response the user wants
         prompt = "Please write a summary of the following reviews of a hike that includes what users liked about the hike, what they disliked about the hike, and a summary of how they described the parking lot."
         response = model.generate_content(prompt + ': ' + comments)
-        return response.text
+        return "\nSummary of the reviews: \n" + response.text
 
 if __name__ == "__main__":
     main()
