@@ -3,18 +3,20 @@ import bs4
 import regex as re
 from urllib.parse import urlparse
 import google.generativeai as genai
+import os
+from dotenv import load_dotenv
 import sys
-
 
 def main():
     """
-    The main function coordinates the program's execution. It enters a loop to continuously prompt the user for a valid URL until they exit.
+    The main function coordinates the program's execution. It enters a loop to continuously prompt the user for a valid URL until they exit,
+    and then prints an AI-generated summary of hikers' reviews for a hike.
     """
     while True:
         hiking_url = is_valid_url()
         hiking_comments = parse_hiking_url(hiking_url)
         print(google_ai_summary(hiking_comments))
-        question = "Do you want to enter another hike"
+        question = "Do you want to enter another hike?"
         answer = get_yes_or_no(question)
         if answer == 'y':
             continue
@@ -93,11 +95,11 @@ def google_ai_summary(comments):
     """
     # try to obtain Google API key from api_key.txt
     try:
-        file = open("api_key.txt")
-        genai.configure(api_key=file.read().rstrip().lstrip())
-        file.close()
+        load_dotenv()
+        google_api_key = os.getenv('GOOGLE_API_KEY')
+        genai.configure(api_key=google_api_key)
     except:
-        return "\nPlease make sure that you saved a valid Google API key in a text file titled 'api_key.txt'."
+        return "\nPlease make sure that you saved a valid Google API key in a .env file with the variable name 'GOOGLE_API_KEY'."
     else:
         model = genai.GenerativeModel('gemini-1.5-flash')
         # change prompt as needed depending on the response the user wants
