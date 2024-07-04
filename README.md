@@ -2,7 +2,7 @@ Hike Reviews Summarizer: A simple app that takes a link to a hike on <a href='ht
 
 <b>Requirements</b>
 
-The user must have a valid Google Gemini API key saved in a text file called "api_key.txt" in the same directory as the app. Please obtain an API key <a href='https://aistudio.google.com/app/apikey>here</a>.
+The user must have a valid Google Gemini API key saved in a .env file with the variable name "GOOGLE_API_KEY". Please obtain an API key <a href='https://aistudio.google.com/app/apikey'>here</a>.
 
 <b>Getting Started</b>
 
