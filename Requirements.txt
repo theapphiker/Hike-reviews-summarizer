@@ -2,3 +2,4 @@ requests
 bs4
 regex
 google-generativeai
+python-dotenv
